@@ -1,0 +1,100 @@
+.App {
+  text-align: center;
+}
+
+h1 {
+  font-size: 48px;
+}
+
+h2 {
+  font-size: 24px;
+}
+
+.row {
+  display: flex;
+}
+
+
+.cell {
+  position: relative;
+  width: 50px;
+  height: 50px;
+}
+
+.visited {
+  background-color: #eee;
+}
+
+.wall {
+  position: absolute;
+  background-color: black;
+}
+
+.up {
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 5px;
+}
+
+.right {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 5px;
+}
+
+.down {
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 5px;
+}
+
+.left {
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 5px;
+}
+
+.player {
+  position: absolute;
+  background-color: blue;
+  width: 30px;
+  height: 30px;
+  top: 10px;
+  left: 10px;
+  transition: all 0.2s ease-in-out;
+}
+
+.goal {
+  position: absolute;
+  background-color: green;
+  width: 30px;
+  height: 30px;
+  bottom: 10px;
+  right: 10px;
+}
+
+.player.up {
+  top: calc(10px - 50px);
+}
+
+.player.right {
+  left: calc(10px + 50px);
+}
+
+.player.down {
+  top: calc(10px + 50px);
+}
+
+.player.left {
+  left: calc(10px - 50px);
+}
+
+.moving .player {
+  /* Анимация для перемещения игрока */
+  transition: transform 0.3s;
+  right: calc(10px - 50px);
+}
