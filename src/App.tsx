@@ -173,7 +173,7 @@ const App = () => {
       setTimeout(() => {
         setIsMoving(false);
         setPlayerPosition(updatedPosition);
-      }, 200);
+      }, 100);
     }
   };
 
