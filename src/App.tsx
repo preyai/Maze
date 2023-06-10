@@ -35,7 +35,7 @@ const generateMaze = (): CellType[][] => {
       walls: { up: true, down: true, left: true, right: true },
       visited: false,
     }))
-  ); 
+  );
 
   const initialCell: CellType = maze[Math.floor(Math.random() * numRows)][Math.floor(Math.random() * numCols)];
 
@@ -94,15 +94,33 @@ const generateMaze = (): CellType[][] => {
   return maze;
 };
 
+const getTransformStyle = (direction: Direction | null) => {
+  switch (direction) {
+    case "up":
+      return "translateY(-100%)";
+    case "down":
+      return "translateY(100%)";
+    case "left":
+      return "translateX(-100%)";
+    case "right":
+      return "translateX(100%)";
+    default:
+      return "translate(0, 0)";
+  }
+};
+
 const App = () => {
   const [playerPosition, setPlayerPosition] = useState(initialPlayerPosition);
   const [maze, setMaze] = useState<CellType[][]>([]);
   const [goalReached, setGoalReached] = useState(false);
   const [count, setCount] = useState(0); // counter of completed mazes
+  const [isMoving, setIsMoving] = useState(false);
+  const [direction, setDirection] = useState<Direction | null>(null);
+
 
   useEffect(() => {
     setMaze(generateMaze());
-    
+
   }, []);
 
   const handleCellClick = (cell: CellType) => {
@@ -110,43 +128,55 @@ const App = () => {
   };
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (isMoving) return;
+
     let updatedPosition = { ...playerPosition };
     let moved = false;
     switch (event.key) {
       case "ArrowUp":
         if (!maze[updatedPosition.row][updatedPosition.col].walls.up) {
           updatedPosition.row--;
+          setDirection("up");
           moved = true;
         }
         break;
       case "ArrowRight":
         if (!maze[updatedPosition.row][updatedPosition.col].walls.right) {
           updatedPosition.col++;
+          setDirection("right");
           moved = true;
         }
         break;
       case "ArrowDown":
         if (!maze[updatedPosition.row][updatedPosition.col].walls.down) {
           updatedPosition.row++;
+          setDirection("down");
           moved = true;
         }
         break;
       case "ArrowLeft":
         if (!maze[updatedPosition.row][updatedPosition.col].walls.left) {
           updatedPosition.col--;
+          setDirection("left");
           moved = true;
         }
         break;
     }
+
     if (moved) {
-      maze[updatedPosition.row][updatedPosition.col].visited = true
-      setPlayerPosition(updatedPosition);
+      setIsMoving(true);
       if (updatedPosition.row === initialGoalPosition.row && updatedPosition.col === initialGoalPosition.col) {
         setGoalReached(true);
-        setCount(count + 1); // increment the counter upon completion
+        setCount(count + 1); // Увеличьте счетчик при завершении игры
       }
+      
+      setTimeout(() => {
+        setIsMoving(false);
+        setPlayerPosition(updatedPosition);
+      }, 200);
     }
   };
+
 
   const resetGame = () => {
     setPlayerPosition(initialPlayerPosition);
@@ -182,7 +212,10 @@ const App = () => {
                     {cell.walls.left && <div className="wall left" />}
                     {playerPosition.row === rowIndex &&
                       playerPosition.col === cellIndex && (
-                        <div className="player" />
+                        <div
+                          className={`player ${isMoving ? "moving" : ""}`}
+                          style={isMoving?{ transform: getTransformStyle(direction) }:{}} // Добавьте эту строку для передачи направления как свойства
+                        />
                       )}
                     {initialGoalPosition.row === rowIndex &&
                       initialGoalPosition.col === cellIndex && (
